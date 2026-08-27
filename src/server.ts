@@ -38,7 +38,7 @@ await pool.query(queryCadastro, [nome, preco]);
 res.status(201).json({ mensagem: 'Produtos inserido com sucesso!' });
 } catch (error: any) {
 console.error('Erro ao inserir produtos:', error);
-res.status(500).json({ error: 'Erro interno ao salvar o produtos.' });
+res.status(500).json({ error: 'Erro interno ao salvar o produto.' });
 }
 });
 
@@ -46,14 +46,14 @@ res.status(500).json({ error: 'Erro interno ao salvar o produtos.' });
 app.get('/produtos', async (req, res) => {
 try {
 // Verifica se a tabela existe antes de ler para evitar erro de tabela fantasma
-const [tabelas]: any = await pool.query("SHOW TABLES LIKE 'produtos'");
+const [tabelas]: any = await pool.query("SHOW TABLES LIKE 'produto'");
 
 if (tabelas.length === 0) {
 // Se a tabela não existe, significa que nenhum produto foi cadastrado ainda
 return res.json([]);
 }
 
-const [rows] = await pool.query('SELECT * FROM `produtos` ORDER BY `CODIGO DO PRODUTOS` DESC');
+const [rows] = await pool.query('SELECT * FROM `produto` ORDER BY `CODIGO DO PRODUTO` DESC');
 res.json(rows);
 } catch (error: any) {
 console.error('Erro ao buscar produtos:', error);
