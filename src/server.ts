@@ -26,7 +26,7 @@ app.post('/usuarios', async (req, res) => {
       CREATE TABLE IF NOT EXISTS \`criar conta\` (
         CPF VARCHAR(255) PRIMARY KEY,
         NOME VARCHAR(255) NOT NULL,
-        E-MAIL VARCHAR(255) NOT NULL UNIQUE,
+        `E-MAIL` VARCHAR(255) NOT NULL UNIQUE,
         SENHA VARCHAR(255) NOT NULL,
         DATA_CADASTRO TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
