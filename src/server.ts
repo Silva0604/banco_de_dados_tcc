@@ -26,7 +26,7 @@ app.post('/usuarios', async (req, res) => {
       CREATE TABLE IF NOT EXISTS \`criar conta\` (
         CPF VARCHAR(255) PRIMARY KEY,
         NOME VARCHAR(255) NOT NULL,
-        `E-MAIL` VARCHAR(255) NOT NULL UNIQUE,
+        E_MAIL VARCHAR(255) NOT NULL UNIQUE,
         SENHA VARCHAR(255) NOT NULL,
         DATA_CADASTRO TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
@@ -34,7 +34,7 @@ app.post('/usuarios', async (req, res) => {
 
     // 3. Verifica se o e-mail já está em uso
     const [usuarioExistente]: any = await pool.query(
-      'SELECT CPF FROM `criar conta` WHERE E-MAIL = ?',
+      'SELECT CPF FROM `criar conta` WHERE E_MAIL = ?',
       [email]
     );
 
@@ -45,7 +45,7 @@ app.post('/usuarios', async (req, res) => {
    
     
     // 5. Salva o usuário no banco
-    const queryInsercao = 'INSERT INTO `criar conta` (NOME, E-MAIL, SENHA, CPF) VALUES (?, ?, ?, ?)';
+    const queryInsercao = 'INSERT INTO `criar conta` (NOME, E_MAIL, SENHA, CPF) VALUES (?, ?, ?, ?)';
     const [result]: any = await pool.query(queryInsercao, [nome, email, senha, cpf]);
 
     // Retorna 201 Created sem expor a senha
