@@ -54,7 +54,8 @@ app.post('/usuarios', async (req, res) => {
       usuario: {
         id: result.insertId,
         nome,
-        email
+        email,
+        cpf,
       }
     });
   } catch (error: any) {
