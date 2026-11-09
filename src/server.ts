@@ -11,6 +11,61 @@ app.use(express.json());
 app.use(cors());
 app.use(express.json())
 
+app.post('/login', async (req, res) => {
+  const { email, senha } = req.body;
+
+  if (!email || !senha) {
+    return res.status(400).json({ error: 'E-mail e senha são obrigatórios.' });
+  }
+
+  try {
+    // 1. Busca o usuário (Atenção às crases nas colunas e tabelas com espaços/hífens)
+    const [usuarios] = await pool.query(
+      'SELECT CPF, NOME, `E-MAIL` as email_banco, SENHA FROM `criar conta` WHERE `E-MAIL` = ?',
+      [email]
+    );
+
+    // Se não achou ninguém
+    if (!usuarios || usuarios.length === 0) {
+      return res.status(401).json({ error: 'E-mail ou senha incorretos.' });
+    }
+
+    const usuario = usuarios[0];
+
+    // O ideal no futuro é: const senhaCorreta = await bcrypt.compare(senha, usuario.SENHA);
+    const senhaCorreta = usuario.SENHA === senha;
+
+    if (!senhaCorreta) {
+      return res.status(401).json({ error: 'E-mail ou senha incorretos.' });
+    }
+
+    // 2. Gera o token aleatório
+    const token = 'tk_' + Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2);
+
+    // 3. Salva o token gerado direto na linha desse usuário no banco
+    // Certifique-se de que a coluna TOKEN existe na tabela `criar conta`
+    await pool.query(
+      'UPDATE `criar conta` SET TOKEN = ? WHERE CPF = ?',
+      [token, usuario.CPF]
+    );
+
+    // 4. Devolve o token e os dados para o usuário
+    return res.status(200).json({
+      mensagem: 'Login realizado com sucesso!',
+      token: token,
+      usuario: {
+        cpf: usuario.CPF,
+        nome: usuario.NOME,
+        email: usuario.email_banco // Usando o alias que criamos na query para evitar problemas com hífen
+      }
+    });
+
+  } catch (error) {
+    console.error('Erro no login:', error);
+    return res.status(500).json({ error: 'Erro no servidor ao tentar logar.' });
+  }
+});
+
 // ================= ROTA PARA CADASTRAR USUÁRIO =================
 app.post('/usuarios', async (req, res) => {
   const { nome, email, cpf, senha } = req.body;
