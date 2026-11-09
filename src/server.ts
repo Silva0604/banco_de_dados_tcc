@@ -32,15 +32,26 @@ app.post('/usuarios', async (req, res) => {
       )
     `);
 
-    // 3. Verifica se o e-mail já está em uso
-    const [usuarioExistente]: any = await pool.query(
-      'SELECT CPF FROM `criar conta` WHERE E_MAIL = ?',
-      [email]
-    );
+// 3. Verifica se o e-mail já está em uso
+const [emailExistente]: any = await pool.query(
+  'SELECT CPF FROM `criar conta` WHERE E_MAIL = ?',
+  [email]
+);
 
-    if (usuarioExistente.length > 0) {
-      return res.status(409).json({ error: 'Este e-mail já está cadastrado.' });
-    }
+if (emailExistente.length > 0) {
+  return res.status(409).json({ error: 'Este e-mail já está cadastrado.' });
+}
+
+// 3.1 Verifica se o CPF já está em uso (Evita quebra por Primary Key)
+const [cpfExistente]: any = await pool.query(
+  'SELECT CPF FROM `criar conta` WHERE CPF = ?',
+  [cpf]
+);
+
+if (cpfExistente.length > 0) {
+  return res.status(409).json({ error: 'Este CPF já está cadastrado.' });
+}
+
 
    
     
