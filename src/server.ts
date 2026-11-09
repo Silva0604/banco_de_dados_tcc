@@ -21,13 +21,13 @@ app.post('/login', async (req, res) => {
   try {
     // 1. Busca o usuário (Atenção às crases nas colunas e tabelas com espaços/hífens)
     const [usuarios] = await pool.query(
-      'SELECT CPF, NOME, `E-MAIL` as email_banco, SENHA FROM `criar conta` WHERE `E-MAIL` = ?',
+      'SELECT CPF, NOME, `E_MAIL` as email_banco, SENHA FROM `criar conta` WHERE `E_MAIL` = ?',
       [email]
     );
 
     // Se não achou ninguém
     if (!usuarios || usuarios.length === 0) {
-      return res.status(401).json({ error: 'E-mail ou senha incorretos.' });
+      return res.status(401).json({ error: 'E_mail ou senha incorretos.' });
     }
 
     const usuario = usuarios[0];
@@ -36,7 +36,7 @@ app.post('/login', async (req, res) => {
     const senhaCorreta = usuario.SENHA === senha;
 
     if (!senhaCorreta) {
-      return res.status(401).json({ error: 'E-mail ou senha incorretos.' });
+      return res.status(401).json({ error: 'E_mail ou senha incorretos.' });
     }
 
     // 2. Gera o token aleatório
