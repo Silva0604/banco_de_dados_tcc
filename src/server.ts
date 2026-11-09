@@ -15,23 +15,23 @@ app.post('/login', async (req, res) => {
   const { email, senha } = req.body;
 
   if (!email || !senha) {
-    return res.status(400).json({ error: 'E-mail e senha são obrigatórios.' });
+    return res.status(400).json({ error: 'E_mail e senha são obrigatórios.' });
   }
 
   try {
     const [rows] = await pool.query(
-      'SELECT CPF, NOME, `E-MAIL` as email_banco, SENHA FROM `criar conta` WHERE `E-MAIL` = ?',
+      'SELECT CPF, NOME, `E_MAIL` as email_banco, SENHA FROM `criar conta` WHERE `E-MAIL` = ?',
       [email]
     ) as any[];
 
     if (!rows || rows.length === 0) {
-      return res.status(401).json({ error: 'E-mail ou senha incorretos.' });
+      return res.status(401).json({ error: 'E_mail ou senha incorretos.' });
     }
 
     const usuario = rows[0];
 
     if (usuario.SENHA !== senha) {
-      return res.status(401).json({ error: 'E-mail ou senha incorretos.' });
+      return res.status(401).json({ error: 'E_mail ou senha incorretos.' });
     }
 
     const token = 'tk_' + Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2);
