@@ -19,12 +19,10 @@ app.post('/login', async (req, res) => {
   }
 
   try {
-    const resultado = await pool.query(
+    const [rows] = await pool.query(
       'SELECT CPF, NOME, `E-MAIL` as email_banco, SENHA FROM `criar conta` WHERE `E-MAIL` = ?',
       [email]
-    );
-
-    const rows = Array.isArray(resultado) ? (Array.isArray(resultado[0]) ? resultado[0] : resultado) : (resultado.rows || resultado);
+    ) as any[];
 
     if (!rows || rows.length === 0) {
       return res.status(401).json({ error: 'E-mail ou senha incorretos.' });
@@ -58,7 +56,6 @@ app.post('/login', async (req, res) => {
     return res.status(500).json({ error: 'Erro no servidor ao tentar logar.' });
   }
 });
-
 
 // ================= ROTA PARA CADASTRAR USUÁRIO =================
 app.post('/usuarios', async (req, res) => {
