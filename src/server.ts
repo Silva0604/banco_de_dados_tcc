@@ -17,7 +17,7 @@ app.post('/usuarios', async (req, res) => {
 
   // 1. Validação básica de entrada
   if (!nome || !email || !senha || !cpf) {
-    return res.status(400).json({ error: 'Nome, email, cpf e senha são obrigatórios.' });
+    return res.status(400).json({ error: 'Nome, email e senha são obrigatórios.' });
   }
 
   try {
