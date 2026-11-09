@@ -39,7 +39,7 @@ const [emailExistente]: any = await pool.query(
 );
 
 if (emailExistente.length > 0) {
-  return res.status(409).json({ error: 'Este e-mail já está cadastrado.' });
+  return res.status(409).json({ error: 'Este e_mail já está cadastrado.' });
 }
 
 // 3.1 Verifica se o CPF já está em uso (Evita quebra por Primary Key)
