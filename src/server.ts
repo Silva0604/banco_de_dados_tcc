@@ -51,7 +51,7 @@ app.post('/pedidos', async (req, res) => {
 
     // Correção: define usuarioLogado a partir do resultado da busca
     const usuarioLogado = usuarios[0];
-    cost total = produtos.reduce((acc,item)=>acc+item["PREÇO DE VENDA"],0);
+    const total = produtos.reduce((acc,item)=>acc+item["PREÇO DE VENDA"],0);
 
     // 4. Monta as linhas para inserir todos os itens no banco
     const valoresParaInserir = produtos.map((item: any) => [
