@@ -15,7 +15,7 @@ app.use(express.json())
 
 // ================= ROTA PARA REALIZAR PEDIDOS =================
 app.post('/pedidos', async (req, res) => {
-  const { token, produtos, endereco, formapagamneto } = req.body;
+  const { token, produtos, endereco, formapagamento } = req.body;
 
   // 1. Validação: confere token e se 'produtos' é uma lista com itens
   if (!token || !Array.isArray(produtos) || produtos.length === 0, !endereco, formapagamento) {
@@ -51,7 +51,7 @@ app.post('/pedidos', async (req, res) => {
 
     // Correção: define usuarioLogado a partir do resultado da busca
     const usuarioLogado = usuarios[0];
-    const total = produtos.reduce((acc,item)=>acc+item["PREÇO DE VENDA"],0);
+    const total = produtos.reduce((acc:any,item:any)=>acc+item.preco,0);
 
     // 4. Monta as linhas para inserir todos os itens no banco
     const valoresParaInserir = produtos.map((item: any) => [
