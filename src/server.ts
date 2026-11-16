@@ -9,7 +9,76 @@ const app = express();
 app.use(express.json());
 
 app.use(cors());
-app.use(express.json())
+app.use(express.json())  
+
+
+
+// ================= ROTA PARA REALIZAR PEDIDOS =================
+app.post('/pedidos', async (req, res) => {
+  const { token, produtos, endereco, formapagamneto } = req.body;
+
+  // 1. Validação: confere token e se 'produtos' é uma lista com itens
+  if (!token || !Array.isArray(produtos) || produtos.length === 0, !endereco, formapagamento) {
+    return res.status(400).json({ error: 'Token e uma lista de produtos são obrigatórios.' });
+  }
+
+  try {
+    // 2. Garante que a tabela de pedidos existe
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS \`venda\` (
+        
+       ID INT AUTO_INCREMENT PRIMARY KEY,
+        CPF_CLIENTE VARCHAR(255) NOT NULL,
+        `CÓDIGO PRODUTO` INT NOT NULL,
+        QUANTIDADE INT DEFAULT 1,
+        DATA_PEDIDO TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ENDEREÇO  VARCHAR(255) NOT NULL,
+        FORMA DE PAGAMENTO  VARCHAR(255) NOT NULL,
+        VALOR   DOUBLE  NOT NULL,
+        
+      )
+    `);
+
+    // 3. Busca o usuário correspondente ao token
+    const [usuarios]: any = await pool.query(
+      'SELECT CPF, NOME FROM `criar conta` WHERE TOKEN = ?',
+      [token]
+    );
+
+    if (usuarios.length === 0) {
+      return res.status(401).json({ error: 'Sessão inválida ou expirada. Faça login novamente.' });
+    }
+
+    // Correção: define usuarioLogado a partir do resultado da busca
+    const usuarioLogado = usuarios[0];
+    cost total = produtos.reduce((acc,intem)=>acc+item["PREÇO DE VENDA"],0);
+
+    // 4. Monta as linhas para inserir todos os itens no banco
+    const valoresParaInserir = produtos.map((item: any) => [
+      usuarioLogado.CPF,
+      item.produtoId, 
+      item.quantidade || 1,  
+        endereco, formapagamneto, total
+    ]);
+
+    // 5. Inserção múltipla em lote (INSERT INTO ... VALUES ?)
+    const queryMultipla = 'INSERT INTO `pedidos` (CPF_CLIENTE, PRODUTO_ID, QUANTIDADE, ENDEREÇO, `FORMA DE PAGAMENTO`, VALOR) VALUES ?';
+    await pool.query(queryMultipla, [valoresParaInserir]);
+
+    // 6. Retorna o sucesso informando a quantidade de itens salvos
+    return res.status(201).json({
+      mensagem: 'Pedido realizado com sucesso!',
+      cliente: usuarioLogado.NOME,
+      totalItens: produtos.length, 
+      total: total
+    });
+
+  } catch (error: any) {
+    console.error('Erro ao salvar lista de pedidos:', error);
+    return res.status(500).json({ error: 'Erro interno ao salvar os pedidos.' });
+  }
+});
+
 
 app.post('/login', async (req, res) => {
   const { email, senha } = req.body;
