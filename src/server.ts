@@ -58,7 +58,7 @@ app.post('/pedidos', async (req, res) => {
       usuarioLogado.CPF,
       item.produtoId, 
       item.quantidade || 1,  
-        endereco, formapagamneto, total
+        endereco, formapagamento, total
     ]);
 
     // 5. Inserção múltipla em lote (INSERT INTO ... VALUES ?)
